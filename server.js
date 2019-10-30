@@ -1,10 +1,26 @@
 const express = require('express'); // importing a CommonJS module
-
+const helmet = require('helmet')
 const hubsRouter = require('./hubs/hubs-router.js');
 
 const server = express();
 
-server.use(express.json());
+function dateLogger(req, res, next) {
+  console.log(new Date().toISOString());
+
+  next();
+}
+
+function methodLogger(req, res, next) {
+  console.log(req.path);
+  console.log(req.method);
+}
+
+// global middleware
+server.use(helmet()) // third party
+server.use(express.json()); // built in
+server.use(dateLogger);
+server.use(methodLogger);
+
 
 server.use('/api/hubs', hubsRouter);
 
